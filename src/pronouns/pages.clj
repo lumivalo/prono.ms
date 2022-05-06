@@ -45,29 +45,29 @@
 
 (defn subject-example
   [subject]
-  (render-sentence (wrap-pronoun (s/capitalize subject)) " went to the park."))
+  (render-sentence (wrap-pronoun (s/capitalize subject)) " est allé.e au parc."))
 
 (defn object-example
   [object]
-  (render-sentence "I went with " (wrap-pronoun object) "."))
+  (render-sentence "Je suis allé.e avec " (wrap-pronoun object) "."))
 
 (defn posessive-determiner-example
   [subject possessive-determiner]
   (render-sentence (wrap-pronoun (s/capitalize subject))
-                   " brought "
+                   " porté "
                    (wrap-pronoun possessive-determiner)
                    " frisbee."))
 
 (defn possessive-pronoun-example
   [possessive-pronoun]
-  (render-sentence "At least I think it was "
+  (render-sentence "Au moins, je pense que c'était le "
                    (wrap-pronoun possessive-pronoun)
                    "."))
 
 (defn reflexive-example
   [subject reflexive]
   (render-sentence (wrap-pronoun (s/capitalize subject))
-                   " threw the frisbee to "
+                   " a lancé.e le frisbee à "
                    (wrap-pronoun reflexive)
                    "."))
 
@@ -78,9 +78,9 @@
 (defn examples-block
   [subject object possessive-determiner possessive-pronoun reflexive]
   (let [sub-obj (s/join "/" [subject object])
-        header-str (str "Here are some example sentences using my "
+        header-str (str "Ici quelques exemples des phrases qui utilisent le pronom "
                         sub-obj
-                        " pronouns:")]
+                        " pronoms:")]
     [:div {:class "section examples"}
      [:h2 header-str]
      [:p (subject-example subject)
@@ -91,25 +91,24 @@
 
 (defn usage-block []
   [:div {:class "section usage"}
-   [:p "Full usage: "
+   [:p "Usage complêt: "
     ;; FIXME morgan.astra <2018-11-14 Wed>
     ;; This looks really ugly in the browser
-       [:tt "https://pronoun.is/subject-pronoun/object-pronoun/possessive-determiner/possessive-pronoun/reflexive"]
-       " displays examples of your pronouns."]
-   [:p "This is a bit unwieldy. If we have a good guess we'll let you use"
-       " just the first one or two."]])
+       [:tt "https://prono.ms/sujet/objet/posessifdeterminant/posessif/reflexif montre des exemples de vos pronoms."]
+   [:p "Ceci est un peu lourd. Si nous connaissons votre pronom, il est permis d’entrer"
+       " seulement la forme principale."]])
 
 (defn contact-block []
   (let [twitter-name (fn [handle] (href (str "https://www.twitter.com/" handle)
                                        (str "@" handle)))]
     [:div {:class "section contact"}
-     [:p "Written by "
+     [:p "Écrit par  "
          (twitter-name "morganastra")
-         ", whose "
-         (href "https://pronoun.is/she" "pronoun.is/she")]
-     [:p "pronoun.is is free software under the "
+         ", qui usilise les "
+         (href "https://prono.ms/elle" "prono.ms/elle")]
+     [:p "prono.ms est un logiciel libre sous l’ "
          (href "https://www.gnu.org/licenses/agpl.html" "AGPLv3")
-         "! visit the project on "
+         "! rendez-vous visiter la projet sur "
          (href "https://github.com/witch-house/pronoun.is" "github")]
      [:p "&lt;3"]]))
 
@@ -119,7 +118,7 @@
 (defn format-pronoun-examples
   [pronoun-declensions]
   (let [sub-objs (map #(s/join "/" (take 2 %)) pronoun-declensions)
-        title (str "Pronoun Island: " (prose-comma-list sub-objs) " examples")
+        title (str "mes prono.ms sont: " (prose-comma-list sub-objs) " exemples")
         examples (map #(apply examples-block %) pronoun-declensions)]
     (html
      [:html
@@ -159,8 +158,8 @@
 (defn front []
   (let [abbreviations (take 6 (u/abbreviate @pronouns-table))
         links (map make-link abbreviations)
-        title "Pronoun Island"
-        description "Pronoun.is is a website for personal pronoun usage examples."]
+        title "mes prono.ms sont:"
+        description "prono.ms est un site web pour des exemples d’usage des pronoms personnels. "]
     (html
      [:html
       [:head
@@ -175,8 +174,8 @@
       [:body
        (header-block title)
        [:div {:class "section table"}
-        [:p "pronoun.is is a website for personal pronoun usage examples"]
-        [:p "here are some pronouns the site knows about:"]
+        [:p "prono.ms est un site web pour des exemples d’usage des pronoms personnels "]
+        [:p "ce site connais ces pronoms:"]
         [:ul links]
         [:p [:small (href "all-pronouns" "see all pronouns in the database")]]]]
       (footer-block)])))
@@ -184,7 +183,7 @@
 (defn all-pronouns []
   (let [abbreviations (u/abbreviate @pronouns-table)
         links (map make-link abbreviations)
-        title "Pronoun Island"]
+        title "mes prono.ms sont:"]
     (html
      [:html
       [:head
@@ -212,13 +211,14 @@
       [:body
        (header-block title)
        [:div {:class "section examples"}
-        [:p [:h2 "We couldn't find those pronouns in our database :("]
-         "If you think we should have them, please reach out!"]
+        [:p [:h2 "Nous n'avons pas pu trouver ces pronoms dans notre 
+base de données" :("]
+         "Si vous pensez qu'il faut les ajouter, contactez-nous!"]
         (when (re-find or-re path)
           (let [alts (s/split path or-re)
                 new-path (str "/" (s/join "/:OR/" alts))]
             [:div
-             "Did you mean: "
+             "Est-ce que vous voulez dire: "
              (href new-path
                    (str "pronoun.is"
                         new-path))]))]
